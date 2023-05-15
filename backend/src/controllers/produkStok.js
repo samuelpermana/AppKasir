@@ -36,13 +36,30 @@ const getProductbyId = async(req,res)=>{
     }
 }
 
-const getProductbyName = async(req,res)=>{
-    const name = req.body.name
+const getProductbyName = async (req,res)=>{
+    const {name} = req.query
     try {
         const [data] = await prodStockMdl.getProductbyName(name)
         res.json({
             message: 'get product by Name success',
             data
+            
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+    }
+}
+const getProductbyCategory = async (req,res)=>{
+    const {idKategori} = req.query
+    try {
+        const [produks]= await prodStockMdl.getProductbyIdKategori(idKategori)
+        res.json({
+            message:"get product by category success",
+            produks
+            
         })
     } catch (error) {
         res.status(500).json({
@@ -112,5 +129,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getProductbyId,
-    getProductbyName
+    getProductbyName,
+    getProductbyCategory,
 }

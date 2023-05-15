@@ -13,8 +13,9 @@ const getProductbyName= (Name) =>{
     const SQLQuery =` SELECT * FROM produk WHERE nama LIKE '%${Name}%'`
     return dbPool.execute(SQLQuery)
 }
-const getHargabyId =(id)=>{
-    const SQLQuery =`SELECT harga FROM produk WHERE idproduk = ${id};`
+
+const getProductbyIdKategori =(idKategori)=>{
+    const SQLQuery =`SELECT * FROM produk WHERE id_kategori = ${idKategori};`
     return dbPool.execute(SQLQuery)
 }
 
@@ -42,6 +43,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getProductbyName,
-    getHargabyId
+    getProductbyIdKategori
     
 }

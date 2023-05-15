@@ -7,8 +7,10 @@ const dbDummy = require('../dbDummy')
 router.get('/',produkStokCtrl.getAllProduct)
 // byName
 router.get('/search',produkStokCtrl.getProductbyName)
+// byKategori
+router.get('/kategori',produkStokCtrl.getProductbyCategory)
 // byID
-router.get('/:id',produkStokCtrl.getProductbyId)
+// router.get('/:id',produkStokCtrl.getProductbyId)
 
 
 
