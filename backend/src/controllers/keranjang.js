@@ -58,20 +58,34 @@ const deleteKeranjang = async (req, res) =>{
     }
 }
 
-// Menambahkan produk ke keranjang
-const addProduktoKeranjang = async (req,res) =>{
+// Membuat Keranjang (praTransaksi)
+const addKeranjang = async (req,res) =>{
     try {
-        const {id_produk,jumlah} = req.body
-        const {id_transaksi} = req.params
-        const [harga] = await prodStockMdl.getHargabyId(id_produk)
-        const harga_beli = harga[0].harga
-        
-        
-        await keranjangModels.addProduktoKeranjang(id_produk, jumlah, harga_beli, id_transaksi)
-        
+        await keranjangModels.addKeranjang()
         res.json({
-            message: 'berhasil menambahkan produk',
-            
+            message: 'berhasil membuat keranjang'
+        })
+    } catch (error) {
+        res.json({
+            message:'server error',
+            serverMessage: error
+        })
+        
+    }
+}
+// Menambahkan produk ke Keranjang (praTransaksi)
+const addProduktoKeranjang = async (req,res) =>{
+    const {id_transaksi} = req.params
+    const {id_produk}= req.body
+    const {jumlah}= req.body
+    const [produk] = await prodStockMdl.getProductbyId(id_produk)
+    const nama = produk[0].nama
+    const harga_beli = produk[0].harga
+    try {
+        await keranjangModels.addProduktoKeranjang(id_produk,nama,jumlah,harga_beli,id_transaksi)
+        res.json({
+
+            message: 'berhasil menambahkan produk ke keranjang',
             
         })
     } catch (error) {
@@ -88,5 +102,6 @@ module.exports = {
     getKeranjang,
     updateKeranjang,
     deleteKeranjang,
+    addKeranjang,
     addProduktoKeranjang
 }

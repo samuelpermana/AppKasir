@@ -1,5 +1,21 @@
 const dbPool = require('../config/database')
 
+// Membuat Keranjang PraTransaksi
+const addKeranjang = () =>{
+    const SQLQuery =`INSERT INTO transaksi (idtransaksi, tanggal, status)
+    VALUES (DEFAULT, DEFAULT, DEFAULT);`
+    return dbPool.execute(SQLQuery)
+}
+// Membuat Keranjang PraTransaksi
+const addProduktoKeranjang = (id_produk,nama,jumlah,harga_beli,id_transaksi) =>{
+    const SQLQuery =`INSERT INTO keranjang (id_produk, nama_produk, jumlah, harga_beli, id_transaksi) 
+    VALUES (${id_produk}, "${nama}", ${jumlah}, ${harga_beli}, ${id_transaksi})`
+    return dbPool.execute(SQLQuery)
+}
+
+
+
+
 // Menampilkan keranjang
 const getProdukinKeranjangbyIDT = (id_transaksi)=>{
     const SQLQuery =`SELECT produk.kode_produk, produk.nama, produk.harga, keranjang.jumlah, (keranjang.jumlah * keranjang.harga_beli) AS subtotal FROM keranjang JOIN produk ON  keranjang.id_produk = produk.idproduk WHERE keranjang.id_transaksi = ${id_transaksi}`
@@ -19,17 +35,13 @@ const deleteProdukinKeranjang = (id_transaksi,id_produk) =>{
     const SQLQuery =`DELETE FROM keranjang WHERE id_transaksi = ${id_transaksi} AND id_produk = ${id_produk}`
     return dbPool.execute(SQLQuery)
 }
-// Menambah isi Keranjang
-const addProduktoKeranjang = (id_produk,jumlah,harga_beli,id_transaksi) =>{
-    const SQLQuery =`INSERT INTO keranjang (id_produk, jumlah, harga_beli, id_transaksi) VALUES (${id_produk}, ${jumlah}, ${harga_beli}, ${id_transaksi})`
-    return dbPool.execute(SQLQuery)
-}
 
 
 module.exports = {
     getProdukinKeranjangbyIDT,
     updateProdukinKeranjang,
     deleteProdukinKeranjang,
+    addKeranjang,
     addProduktoKeranjang
    
 }
