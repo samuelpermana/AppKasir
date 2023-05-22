@@ -13,6 +13,19 @@ const addProduktoKeranjang = (id_produk,nama,jumlah,harga_beli,id_transaksi) =>{
     return dbPool.execute(SQLQuery)
 }
 
+// Cek apakah sudah ada produk dalam keranjang
+const cekprodukInKeranjang = (nama, id_transaksi) =>{
+    const SQLQuery =`SELECT COUNT(*) > 0 FROM keranjang WHERE id_transaksi = ${id_transaksi} AND nama_produk = '${nama}';`
+    return dbPool.execute(SQLQuery)
+}
+// update jumlah produk dalam keranjang
+const addJumlah = (nama, id_transaksi, jumlah) =>{
+    const SQLQuery =`UPDATE keranjang SET jumlah = jumlah + ${jumlah} WHERE id_transaksi = ${id_transaksi} AND nama_produk = '${nama}'`
+    return dbPool.execute(SQLQuery)
+}
+
+
+
 
 
 
@@ -42,6 +55,8 @@ module.exports = {
     updateProdukinKeranjang,
     deleteProdukinKeranjang,
     addKeranjang,
-    addProduktoKeranjang
+    addProduktoKeranjang,
+    cekprodukInKeranjang,
+    addJumlah
    
 }

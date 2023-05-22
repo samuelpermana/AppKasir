@@ -1,6 +1,51 @@
 const prodStockMdl= require('../models/produkStok')
 const keranjangModels = require('../models/keranjang')
 
+// Membuat Keranjang (praTransaksi)
+const addKeranjang = async (req,res) =>{
+    try {
+        await keranjangModels.addKeranjang()
+        res.json({
+            message: 'berhasil membuat keranjang'
+        })
+    } catch (error) {
+        res.json({
+            message:'server error',
+            serverMessage: error
+        })
+        
+    }
+}
+// Menambahkan produk ke Keranjang (praTransaksi)
+const addProduktoKeranjang = async (req,res) =>{
+    const {id_transaksi} = req.params
+    const {id_produk}= req.body
+    const {jumlah}= req.body
+    const [produk] = await prodStockMdl.getProductbyId(id_produk)
+    const nama = produk[0].nama
+    const harga_beli = produk[0].harga
+    try {
+        const [ProdukAvail]=  await keranjangModels.cekprodukInKeranjang(nama,id_transaksi)
+        const isProdukAvail = ProdukAvail[0][["COUNT(*) > 0"]]
+        if (isProdukAvail===1) {
+            await keranjangModels.addJumlah(nama,id_transaksi,jumlah)
+        }else{
+            await keranjangModels.addProduktoKeranjang(id_produk,nama,jumlah,harga_beli,id_transaksi)
+        }
+        
+        res.json({
+            message: 'berhasil menambahkan produk ke keranjang',
+            isProdukAvail,
+        })
+    } catch (error) {
+        res.json({
+            message:'server error',
+            serverMessage: error
+        })
+        
+    }
+}
+
 // get 
 const getKeranjang = async (req, res) =>{
     const {id_transaksi} = req.params
@@ -58,44 +103,7 @@ const deleteKeranjang = async (req, res) =>{
     }
 }
 
-// Membuat Keranjang (praTransaksi)
-const addKeranjang = async (req,res) =>{
-    try {
-        await keranjangModels.addKeranjang()
-        res.json({
-            message: 'berhasil membuat keranjang'
-        })
-    } catch (error) {
-        res.json({
-            message:'server error',
-            serverMessage: error
-        })
-        
-    }
-}
-// Menambahkan produk ke Keranjang (praTransaksi)
-const addProduktoKeranjang = async (req,res) =>{
-    const {id_transaksi} = req.params
-    const {id_produk}= req.body
-    const {jumlah}= req.body
-    const [produk] = await prodStockMdl.getProductbyId(id_produk)
-    const nama = produk[0].nama
-    const harga_beli = produk[0].harga
-    try {
-        await keranjangModels.addProduktoKeranjang(id_produk,nama,jumlah,harga_beli,id_transaksi)
-        res.json({
 
-            message: 'berhasil menambahkan produk ke keranjang',
-            
-        })
-    } catch (error) {
-        res.json({
-            message:'server error',
-            serverMessage: error
-        })
-        
-    }
-}
 
 
 module.exports = {
